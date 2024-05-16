@@ -116,7 +116,6 @@ leg2 = plot_signals(
 )
 for i, l in enumerate(leg2):
     leg2[i] = InteractiveLegend(legend=l)
-# leg2 = InteractiveLegend()
 
 fig3, slider3, leg3 = plot_3D_signal_slider([
         (xs, ys, zs, "truth"), 
@@ -134,6 +133,5 @@ leg4 = plot_signals(
 )
 for i, l in enumerate(leg4):
     leg4[i] = InteractiveLegend(legend=l)
-# leg4 = InteractiveLegend()
 
 plt.show()

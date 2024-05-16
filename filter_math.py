@@ -152,4 +152,75 @@ def disp_mat(mats, names):
         print(f"{n}={mat}")
 
 
+def is_controllable(V, F):
+    """
+    This function checks the rank condition for controllability
+
+    Parameters:
+        V: The control matrix
+        F: The state transition matrix
+    """
+    N = F.shape[0]
+    rank_cond = True
+    for i in range(N):
+        if np.linalg.matrix_rank(np.linalg.matrix_power(F, i) @ V) != N:
+            rank_cond = False
+    return rank_cond
+
+
+def is_observable(G, F):
+    """
+    This function checks the rank condition for observability
+
+    Parameters:
+        G: The observation matrix
+        F: The state transition matrix
+    """
+    N = F.shape[0]
+    G = G.T
+    F = F.T
+    rank_cond = True
+    for i in range(N):
+        if np.linalg.matrix_rank(np.linalg.matrix_power(F, i) @ G) != N:
+            rank_cond = False
+    return rank_cond
+
+def is_stable(V, F, G):
+    """
+    Function to check stability of the system based on the given conditions
+    True -> stable
+    1 -> ||F|| < 1
+    2 -> observable but not controllable
+    3 -> both observable and controllable (optimal K_m exists for all t_m)
+
+    Parameters:
+        V: control matrix
+        F: state transition matrix
+        G: observation model matrix
+    """
+    
+    # condition 1: Norm of F < 1
+    if np.linalg.norm(F) < 1:
+        return (True, 1)
+
+    # condition 2: Observability
+    if is_observable(G, F):
+        if is_controllable(V, F):
+            return (True, 3)
+        return (True, 2)
+
+    return (False, -1)
+
+
+def alt_stability_condition(F, G, K_inf):
+    """
+    Check the asymptotic kalman gain stability condition
+
+    Parameters:
+        F: state transition matrix
+        G: observation matrix
+        K_inf: asymptotic kalman gain matrix
+    """
+    N = F.shape[0]
+    return np.linalg.norm(F @ (np.eye(N) - K_inf @ G)) < 1
 # def generate_report(F, G, Q, R, u, P, v, N, K)
