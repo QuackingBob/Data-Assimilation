@@ -1,5 +1,6 @@
 import numpy as np
 from filter_math import *
+from plotting_helpers import *
 import matplotlib.pyplot as plt
 
 
@@ -98,27 +99,32 @@ xk, yk, zk = (updated_states[:,0], updated_states[:,1], updated_states[:,2])
 xv, yv, zv = (measurements[:,0], measurements[:,1], measurements[:,2])
 xm, ym, zm = (u_pred[:,0], u_pred[:,1], u_pred[:,2])
 
-fig1, slider1 = plot_3D_signal_slider([
+fig1, slider1, leg1 = plot_3D_signal_slider([
         (xs, ys, zs, "truth"), 
         (xp, yp, zp, "model prior"),
         (xv, yv, zv, "observations"),
         (xk, yk, zk, "filtered signal"),
     ], "Lorenz Attractor")
+leg1 = InteractiveLegend(legend=leg1)
 
-plot_signals(
+leg2 = plot_signals(
     ([xs, xp, xv, xk], ["true", "model prior", "obs", "filter"], "X"), 
     ([ys, yp, yv, yk], ["true", "model prior", "obs", "filter"], "Y"), 
     ([zs, zp, zv, zk], ["true", "model prior", "obs", "filter"], "Z"),
     title="Signal Plot",
     xlabel="Time",
 )
+for i, l in enumerate(leg2):
+    leg2[i] = InteractiveLegend(legend=l)
+# leg2 = InteractiveLegend()
 
-fig3, slider3 = plot_3D_signal_slider([
+fig3, slider3, leg3 = plot_3D_signal_slider([
         (xs, ys, zs, "truth"), 
         (xm, ym, zm, "model only"),
     ], "Lorenz Attractor", 3)
+leg3 = InteractiveLegend(legend=leg3)
 
-plot_signals(
+leg4 = plot_signals(
     ([xs, xm], ["true", "model only"], "X"), 
     ([ys, ym], ["true", "model only"], "Y"), 
     ([zs, zm], ["true", "model only"], "Z"),
@@ -126,5 +132,8 @@ plot_signals(
     xlabel="Time",
     fignum=4
 )
+for i, l in enumerate(leg4):
+    leg4[i] = InteractiveLegend(legend=l)
+# leg4 = InteractiveLegend()
 
 plt.show()

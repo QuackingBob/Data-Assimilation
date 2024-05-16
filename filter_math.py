@@ -1,119 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.colors as co
-from mpl_toolkits.mplot3d import Axes3D
-from matplotlib.widgets import Slider
-
-def plot_3D_signal(signals, name, fignum=1):
-    """
-    Plots multiple 3D signals together
-
-    Parameters:
-        signals: list of tuples with signal (x, y, z, "name")
-        name: figure title
-    """
-    fig = plt.figure(fignum, figsize=(12, 8))
-    ax = fig.add_subplot(111, projection='3d')
-    for (xs, ys, zs, label) in signals:
-        ax.plot(xs, ys, zs, lw=0.5, label=label)
-    ax.set_title(name)
-    ax.set_xlabel("X")
-    ax.set_ylabel("Y")
-    ax.set_zlabel("Z")
-    ax.legend()
-    # plt.show()
-
-def plot_3D_signal_slider(signals, name, fignum=1):
-    """
-    Plots multiple 3D signals together with a slider to control time
-
-    Parameters:
-        signals: list of tuples with signal (x, y, z, "name")
-        name: figure title
-    """
-    fig = plt.figure(fignum, figsize=(12, 8))
-    ax = fig.add_subplot(111, projection='3d')
-    slider_ax = fig.add_axes([0.1, 0.02, 0.8, 0.03])  # Position of the slider
-
-    lines = []  # Store the plotted lines
-
-    for (xs, ys, zs, label) in signals:
-        line, = ax.plot(xs, ys, zs, lw=0.5, label=label)
-        lines.append(line)
-    ax.set_title(name)
-    ax.set_xlabel("X")
-    ax.set_ylabel("Y")
-    ax.set_zlabel("Z")
-    ax.legend()
-
-    time_slider = Slider(slider_ax, 'Time', 0, len(signals[0][0])-1, valinit=0)  # Initialize slider
-
-    def update(val):
-        time_index = int(time_slider.val)
-        for line, (xs, ys, zs, label) in zip(lines, signals):
-            line.set_data(xs[:time_index+1], ys[:time_index+1])
-            line.set_3d_properties(zs[:time_index+1])
-        ax.set_title(name)
-        fig.canvas.draw_idle()  # Redraw the plot
-
-    time_slider.on_changed(update)
-    
-    return fig, time_slider
-
-def plot_signals_ensemble(*args, title="Signal Plot", xlabel="Time", ylabel="Amplitude", fignum=3):
-    """
-    Plots multiple signals on the same figure
-
-    Parameters:
-        *args: variable list of tuple (signal, "name")
-        title: Title of the plot
-        xlabel: Label for the x-axis
-        ylabel: Label for the y-axis
-    """
-
-    # plt.figure(fignum)
-    fig, ax = plt.subplots(figsize=(12, 8))
-
-    for i, (signal, name) in enumerate(args):
-        rgb_color = co.hsv_to_rgb([i / len(args), 1, 1])
-        ax.plot(signal, label=name, color=rgb_color)
-
-    ax.set_title(title)
-    ax.set_xlabel(xlabel)
-    ax.set_ylabel(ylabel)
-    ax.legend()
-
-    plt.grid(True)
-    # plt.show()
-
-
-def plot_signals(*args, title="Signal Plot", xlabel="Time", fignum=2):
-    """
-    Plots multiple signals on the same figure
-
-    Parameters:
-        *args: variable list of tuple ([signalX1, signalX2, ...], ["name1", "name2", ...], "title") ...
-        title: Title of the plot
-        xlabel: Label for the x-axis
-    """
-
-    # plt.figure(fignum)
-    fig, axes = plt.subplots(3, 1, figsize=(12, 8), sharex=True)
-
-    for i, (signal_list, names, title) in enumerate(args):
-        for j, signal in enumerate(signal_list):
-            rgb_color = co.hsv_to_rgb([j / len(signal_list), 1, 1])
-            axes[i].plot(signal, label=names[j], color=rgb_color)
-            axes[i].set_title(title + " Component")
-            axes[i].set_ylabel(title)
-            axes[i].legend()
-
-    axes[-1].set_xlabel(xlabel)
-
-    plt.grid(True)
-    plt.tight_layout()
-    # plt.show()
-
 
 # def rk4(u_m, u_mp1, t_m, dt):
 #         k1 = dt * u_m
@@ -254,6 +139,17 @@ def simulate_kalman_filter(F, G, Q, R, u, P, measurements, N, controls=None, B=N
     
     return predicted_states, updated_states, predicted_covariances, updated_covariances
 
+
 def disp_mat(mats, names):
+    """
+    Shortcut function to print multiple matrices simulatneously
+    
+    Parameters:
+        mats: list of matrices [m1, m2, ...]
+        names: list of names to print ["Mat1", ...]
+    """
     for (mat, n) in zip(mats, names):
         print(f"{n}={mat}")
+
+
+# def generate_report(F, G, Q, R, u, P, v, N, K)
