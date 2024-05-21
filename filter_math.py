@@ -224,6 +224,7 @@ def alt_stability_condition(F, G, K_inf):
     N = F.shape[0]
     return np.linalg.norm(F @ (np.eye(N) - K_inf @ G)) < 1
 
+
 def calc_rmse(truth, x):
     """
     Calculate RMSE for signal (Accross N)
@@ -232,7 +233,21 @@ def calc_rmse(truth, x):
         truth: NxM np array
         x: NxM np array
     """
-
     error = truth - x
+    squared_error = error ** 2
+    mean_squared_error = np.mean(squared_error, axis=0)
+    rmse = np.sqrt(mean_squared_error)
+    return rmse
     
+
+def calc_max_eigenval(M):
+    """
+    Get the magnitude of the largest eigenvalue of matrix M
+
+    Paramters:
+        M: matrix (square obviously)
+    """
+    eigenvalues = np.linalg.eigvals(M)
+    return np.max(np.abs(eigenvalues))
+
 # def generate_report(F, G, Q, R, u, P, v, N, K)

@@ -94,10 +94,10 @@ R = calculate_noise_covariance(measurements, true_signal) # this is to simulate 
 disp_mat([F_0, G, Q, u, P, R], [i for i in "FGQuPR"])
 
 predicted_states, updated_states, _, _ = simulate_kalman_filter(calcF, G, Q, R, u, P, measurements, N, t_0=0, dt=dt, Fisfunc=True)
-xp, yp, zp = (predicted_states[:,0], predicted_states[:,1], predicted_states[:,2])
-xk, yk, zk = (updated_states[:,0], updated_states[:,1], updated_states[:,2])
-xv, yv, zv = (measurements[:,0], measurements[:,1], measurements[:,2])
-xm, ym, zm = (u_pred[:,0], u_pred[:,1], u_pred[:,2])
+xp, yp, zp = (predicted_states[:,0], predicted_states[:,1], predicted_states[:,2]) # model prior from prediction stage
+xk, yk, zk = (updated_states[:,0], updated_states[:,1], updated_states[:,2]) # kalman filter output
+xv, yv, zv = (measurements[:,0], measurements[:,1], measurements[:,2]) # observations only
+xm, ym, zm = (u_pred[:,0], u_pred[:,1], u_pred[:,2]) # only model (no use of kalman filter output)
 
 fig1, slider1, leg1 = plot_3D_signal_slider([
         (xs, ys, zs, "truth"), 

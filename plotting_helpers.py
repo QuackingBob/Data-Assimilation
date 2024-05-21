@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as co
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.widgets import Slider
+from filter_math import *
 
 def plot_3D_signal(signals, name, fignum=1):
     """
@@ -119,12 +120,13 @@ def plot_signals(*args, title="Signal Plot", xlabel="Time", fignum=2):
 
     return legs
 
-def plot_rmse(*args, title="Signal Plot", xlabel="Time", ylabel="Amplitude RMSE", fignum=5):
+def plot_rmse(ground_truth, *args, title="Signal RMSE Plot", xlabel="Time", ylabel="Amplitude RMSE", fignum=5):
     """
-    Plots multiple signals on the same figure
+    Plots the RMSE for multiple signals on the same figure
 
     Parameters:
-        *args: variable list of tuple [ground, [(signal, "name")]]
+        ground_truth: the ground truth signal
+        *args: variable list of tuple (signal, "name")
         title: Title of the plot
         xlabel: Label for the x-axis
         ylabel: Label for the y-axis
@@ -132,9 +134,76 @@ def plot_rmse(*args, title="Signal Plot", xlabel="Time", ylabel="Amplitude RMSE"
 
     plt.figure(fignum)
     fig, ax = plt.subplots(figsize=(12, 8))
-    ground_truth = np.array(args[0])
+    ground_truth = np.array(ground_truth)
 
-    for i, (signal, name) in enumerate(args[1]):
+    for i, (signal, name) in enumerate(args):
+        signal = np.array(signal)
+        assert ground_truth.shape == signal.shape
+        rmse = calc_rmse(ground_truth, signal)
+        rgb_color = co.hsv_to_rgb([i / len(args), 1, 1])
+        ax.plot(rmse, label=(name + " RMSE"), color=rgb_color)
+
+    ax.set_title(title)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    leg = ax.legend()
+
+    plt.grid(True)
+    # plt.show()
+    return fig, leg
+
+
+def plot_asymptotic_matrix_spectral_norm(*args, title="Signal RMSE Plot", xlabel="Time", ylabel="Amplitude RMSE", fignum=5):
+    """
+    Plots spectral norm of matrix over timestep on same figure
+
+    Parameters:
+        *args: variable list of tuple (matrix_signal, "name") - note matrix_signal should be (NxNxM)
+        title: Title of the plot
+        xlabel: Label for the x-axis
+        ylabel: Label for the y-axis
+    """
+
+    plt.figure(fignum)
+    fig, ax = plt.subplots(figsize=(12, 8))
+
+    for i, (matrices, name) in enumerate(args):
+        M = matrices.shape[2]
+        signal = np.empty(M)
+        for i in range(M):
+            signal[i] = np.linalg.norm(matrices[:, :, i], ord=2)
+        rgb_color = co.hsv_to_rgb([i / len(args), 1, 1])
+        ax.plot(signal, label=name, color=rgb_color)
+
+    ax.set_title(title)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    leg = ax.legend()
+
+    plt.grid(True)
+    # plt.show()
+    return fig, leg
+
+
+def plot_asymptotic_matrix_max_eigen(*args, title="Signal RMSE Plot", xlabel="Time", ylabel="Amplitude RMSE", fignum=5):
+    """
+    Plots spectral norm of matrix over timestep on same figure
+
+    Parameters:
+        *args: variable list of tuple (matrix_signal, "name") - note matrix_signal should be (NxNxM)
+        title: Title of the plot
+        xlabel: Label for the x-axis
+        ylabel: Label for the y-axis
+    """
+
+    plt.figure(fignum)
+    fig, ax = plt.subplots(figsize=(12, 8))
+
+    for i, (matrices, name) in enumerate(args):
+        M = matrices.shape[2]
+        signal = np.empty(M)
+        for i in range(M):
+            signal[i] = calc_max_eigenval(matrices[:, :, i])
         rgb_color = co.hsv_to_rgb([i / len(args), 1, 1])
         ax.plot(signal, label=name, color=rgb_color)
 
