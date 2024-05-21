@@ -72,7 +72,7 @@ def plot_signals_ensemble(*args, title="Signal Plot", xlabel="Time", ylabel="Amp
         ylabel: Label for the y-axis
     """
 
-    # plt.figure(fignum)
+    plt.figure(fignum)
     fig, ax = plt.subplots(figsize=(12, 8))
 
     for i, (signal, name) in enumerate(args):
@@ -91,7 +91,7 @@ def plot_signals_ensemble(*args, title="Signal Plot", xlabel="Time", ylabel="Amp
 
 def plot_signals(*args, title="Signal Plot", xlabel="Time", fignum=2):
     """
-    Plots multiple signals on the same figure
+    Plots multiple signals on subplots
 
     Parameters:
         *args: variable list of tuple ([signalX1, signalX2, ...], ["name1", "name2", ...], "title") ...
@@ -107,9 +107,9 @@ def plot_signals(*args, title="Signal Plot", xlabel="Time", fignum=2):
         for j, signal in enumerate(signal_list):
             rgb_color = co.hsv_to_rgb([j / len(signal_list), 1, 1])
             axes[i].plot(signal, label=names[j], color=rgb_color)
-            axes[i].set_title(title + " Component")
-            axes[i].set_ylabel(title)
-            legs.append(axes[i].legend())
+        axes[i].set_title(title + " Component")
+        axes[i].set_ylabel(title)
+        legs.append(axes[i].legend())
 
     axes[-1].set_xlabel(xlabel)
 
@@ -118,6 +118,34 @@ def plot_signals(*args, title="Signal Plot", xlabel="Time", fignum=2):
     # plt.show()
 
     return legs
+
+def plot_rmse(*args, title="Signal Plot", xlabel="Time", ylabel="Amplitude RMSE", fignum=5):
+    """
+    Plots multiple signals on the same figure
+
+    Parameters:
+        *args: variable list of tuple [ground, [(signal, "name")]]
+        title: Title of the plot
+        xlabel: Label for the x-axis
+        ylabel: Label for the y-axis
+    """
+
+    plt.figure(fignum)
+    fig, ax = plt.subplots(figsize=(12, 8))
+    ground_truth = np.array(args[0])
+
+    for i, (signal, name) in enumerate(args[1]):
+        rgb_color = co.hsv_to_rgb([i / len(args), 1, 1])
+        ax.plot(signal, label=name, color=rgb_color)
+
+    ax.set_title(title)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    leg = ax.legend()
+
+    plt.grid(True)
+    # plt.show()
+    return fig, leg
 
 
 #-------------------------------------Code From External Sources--------------------------------------

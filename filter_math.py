@@ -223,4 +223,16 @@ def alt_stability_condition(F, G, K_inf):
     """
     N = F.shape[0]
     return np.linalg.norm(F @ (np.eye(N) - K_inf @ G)) < 1
+
+def calc_rmse(truth, x):
+    """
+    Calculate RMSE for signal (Accross N)
+
+    Parameters:
+        truth: NxM np array
+        x: NxM np array
+    """
+
+    error = truth - x
+    
 # def generate_report(F, G, Q, R, u, P, v, N, K)
