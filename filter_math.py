@@ -1,4 +1,5 @@
 import numpy as np
+import scipy as scp
 
 # def rk4(u_m, u_mp1, t_m, dt):
 #         k1 = dt * u_m
@@ -249,5 +250,18 @@ def calc_max_eigenval(M):
     """
     eigenvalues = np.linalg.eigvals(M)
     return np.max(np.abs(eigenvalues))
+
+
+# def calculate_fourier_modes(signal):
+#     """
+#     This function takes the signal and calculates the fourier modes of the signal (complex)
+
+#     Parameters:
+#         signal: NxM numpy array where N is the state space dimension
+
+#     """
+
+#     scp.fft()
+
 
 # def generate_report(F, G, Q, R, u, P, v, N, K)
